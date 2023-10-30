@@ -73,9 +73,9 @@ public class MyFrame extends JFrame implements KeyListener {
   public void keyPressed(KeyEvent e) {
     if (move && !MyPanel.gameover && Invader.nInvaders != 0) {
       switch(e.getKeyCode()) {
-        case KeyEvent.VK_RIGHT: if (695 > shipX) {shipX+=10;  repaint();}
+        case KeyEvent.VK_RIGHT: if (695 > shipX) {shipX+=15;  repaint();}
           return;
-        case KeyEvent.VK_LEFT: if (0 < shipX) {shipX-=10; repaint();}
+        case KeyEvent.VK_LEFT: if (0 < shipX) {shipX-=15; repaint();}
           return;
       }
     }
