@@ -23,6 +23,7 @@ public class MyFrame extends JFrame implements KeyListener {
   boolean ufoHit = false;
   boolean firstTime = true;
   public static ArrayList<Bullet> bs = new ArrayList<Bullet>();
+  boolean[] keysDown = {false, false};
 
   MyFrame() {}
 
@@ -60,6 +61,26 @@ public class MyFrame extends JFrame implements KeyListener {
     };
     invaderBulletThread.start();
     invaderThread.start();
+    
+    TimerTask tt = new TimerTask() {
+    	@Override
+    	public void run() {
+    		if (move && !MyPanel.gameover && Invader.nInvaders != 0) {
+    	       if (695 > shipX && keysDown[1]) {
+    	    	   shipX++;  
+    	    	   repaint();
+    	        }
+    	       
+    	       	if (0 < shipX && keysDown[0]) {
+    	        	shipX--; 
+    	        	repaint();
+    			}
+				
+    		}
+    	}
+    };
+    new Timer().schedule(tt, 1, 2);
+    
     panel.ufoLoop();
   }
 
@@ -67,37 +88,43 @@ public class MyFrame extends JFrame implements KeyListener {
   public void keyTyped(KeyEvent e) {}
 
   @Override
-  public void keyReleased(KeyEvent e) {}
+  public void keyReleased(KeyEvent e) {
+	  switch (e.getKeyCode()) {
+	 	case KeyEvent.VK_RIGHT:
+		 	keysDown[1] = false;
+		 	break;
+	 	case KeyEvent.VK_LEFT:
+	 		keysDown[0] = false;
+		 	break;
+	 }
+	  if (move && bs.size() <= 2 && (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP)) {
+			bs.add(0, new Bullet()); 
+			MyPanel.score--;
+			MyPanel.scoreL.setText("Score: "+MyPanel.score);
+			try {
+				String soundName = "bullet.wav";    
+				AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+				Clip clip = AudioSystem.getClip();
+				clip.open(audioInputStream);
+				clip.start();
+			} catch (Exception ex) {}
+			if (firstTime) {
+				moveBullet();
+				firstTime = false;
+			}
+		}
+  }
 
   @Override
   public void keyPressed(KeyEvent e) {
-    if (move && !MyPanel.gameover && Invader.nInvaders != 0) {
-      switch(e.getKeyCode()) {
-        case KeyEvent.VK_RIGHT: if (695 > shipX) {shipX+=15;  repaint();}
-          return;
-        case KeyEvent.VK_LEFT: if (0 < shipX) {shipX-=15; repaint();}
-          return;
-      }
-    }
-     if ((e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_UP) && !MyPanel.gameover && Invader.nInvaders != 0 && move) {
-      if (bs.size() <= 2) {
-        bs.add(0, new Bullet()); 
-        MyPanel.score--;
-        MyPanel.scoreL.setText("Score: "+MyPanel.score);
-        try {
-        	String soundName = "bullet.wav";    
-        	AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
-        	Clip clip = AudioSystem.getClip();
-        	clip.open(audioInputStream);
-        	clip.start();
-        } catch (Exception ex) {}
-        if (firstTime) {
-          moveBullet();
-          firstTime = false;
-        }
-        return;
-      }
-    }
+	 switch (e.getKeyCode()) {
+	 	case KeyEvent.VK_RIGHT:
+		 	keysDown[1] = true;
+		 	break;
+	 	case KeyEvent.VK_LEFT:
+	 		keysDown[0] = true;
+		 	break;
+	 }
   }
 
   public void moveBullet() {  
