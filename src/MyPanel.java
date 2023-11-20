@@ -289,15 +289,15 @@ public class MyPanel extends JPanel {
 	  int countR = 0;
 	  int countL = 0;
 	  for (int y = 0; y < 5; y++) {
-		  if (!MyPanel.invaders[Math.abs(MyPanel.maxTickL)][y].getStatus())
+		  if (!invaders[Math.abs(maxTickL)][y].getStatus())
 			  countL++;
-		  if (!MyPanel.invaders[10 - (MyPanel.maxTickR-6)][y].getStatus())
+		  if (!invaders[11 - (maxTickR-6)][y].getStatus())
 			  countR++;
 	  }
 	  if (countL == 5) 
-		  MyPanel.maxTickL--;
+		  maxTickL--;
 	  if (countR == 5)
-		  MyPanel.maxTickR++;
+		  maxTickR++;
 	  if (countR != 5 && countL != 5) 
 		  done = true;
 	 }
